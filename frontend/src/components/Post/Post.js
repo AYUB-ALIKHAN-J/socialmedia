@@ -34,7 +34,7 @@ const Post = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      alert('Post created successfully!');
+      alert('You have posted successfully!');
       setCaption('');
       setPostImage(null);
     } catch (error) {
