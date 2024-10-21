@@ -4,6 +4,7 @@ import HomePage from './components/HomePage/HomePage';
 import Profile from './components/Profile/Profile';
 import KnowledgeHub from './components/KnowledgeHub/KnowledgeHub';
 import StudyGroup from './components/StudyGroup/StudyGroup';
+import Post from './components/Post/Post';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/profile" element={<Profile />} /> {/* Route for the Profile page */}
         <Route path="/knowledge-hub" element={<KnowledgeHub />} /> {/* Route for the Knowledge Hub page */}
         <Route path="/study-group" element={<StudyGroup />} /> {/* Route for the Study Group page */}
+        <Route path="/new-post" element={<Post />} />
         
          {/* Route for the Logout page */}
       </Routes>

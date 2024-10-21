@@ -1,25 +1,49 @@
-.post {
-    background-color: white;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .post-header {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .post-content img {
-    width: 100%;
-    height: auto;
-    margin-top: 10px;
-  }
-  
-  .post-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
+.post-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url("D:\FullStack\carimages\remotecar2.jpeg"); /* You can replace this with your background */
+  background-size: cover;
+  background-position: center;
+}
+
+.post-form {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 450px;
+  text-align: center;
+}
+
+.post-form h1 {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.post-input {
+  width: 80%;
+  padding: 15px;
+  margin: 15px 0;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  background: transparent;
+  color: white;
+}
+
+.post-btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 25px;
+  background-color: #ffcc00;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.post-btn:hover {
+  background-color: #ffc700;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import './Navbar.css';
-import { FaHome, FaUser, FaBook, FaUsers, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaUser, FaBook, FaUsers, FaSignOutAlt, FaPlusCircle } from 'react-icons/fa';
 
 const Navbar = () => {
   return (
@@ -28,6 +28,12 @@ const Navbar = () => {
           <a href="/study-group">
             <FaUsers className="icon" />
             Study Group
+          </a>
+        </li>
+        <li>
+          <a href="/new-post">
+            <FaPlusCircle className="icon" />
+            Add New Post
           </a>
         </li>
         <li>
