@@ -1,13 +1,15 @@
-// Profile.js
 import React from 'react';
 import Navbar from '../Navbar/Navbar';
+import './Profile.css';
 
 const Profile = () => {
   return (
-    <div>
+    <div className="container">
       <Navbar />
-      <h1>Profile Page</h1>
-      {/* Add your profile content here */}
+      <div className="profile-content">
+        <h1>Profile Page</h1>
+        {/* Add your profile content here */}
+      </div>
     </div>
   );
 };

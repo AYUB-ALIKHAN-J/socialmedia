@@ -1,13 +1,15 @@
-// StudyGroup.js
 import React from 'react';
 import Navbar from '../Navbar/Navbar';
+import './StudyGroup.css';
 
 const StudyGroup = () => {
   return (
-    <div>
+    <div className="container">
       <Navbar />
-      <h1>Study Group Page</h1>
-      {/* Add your study group content here */}
+      <div className="study-group-content">
+        <h1>Study Group Page</h1>
+        {/* Add your study group content here */}
+      </div>
     </div>
   );
 };

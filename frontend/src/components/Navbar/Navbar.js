@@ -1,7 +1,5 @@
 import React from 'react';
 import './Navbar.css';
-
-// Importing React Icons
 import { FaHome, FaUser, FaBook, FaUsers, FaSignOutAlt } from 'react-icons/fa';
 
 const Navbar = () => {
@@ -23,7 +21,7 @@ const Navbar = () => {
         <li>
           <a href="/knowledge-hub">
             <FaBook className="icon" />
-            Know ayub
+            Knowledge Hub
           </a>
         </li>
         <li>

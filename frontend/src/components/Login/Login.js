@@ -19,19 +19,18 @@ const Login = () => {
     // Send login data to the backend
     axios.post('http://127.0.0.1:8000/login', { user, pass })
       .then((response) => {
+        console.log(response.data); // Log the full response data for debugging
         if (response.data.message === "Login successful") {
-          navigate('/home', { state: { userData: response.data.user } });
-        } else {
-          alert(response.data.message);
-        }
-          console.log('Login successful:', response.data);
-          alert("Login successful!");
-          
           // Navigate to the home page with user data
-          
+          navigate('/home', { state: { userData: response.data.user } });
+          alert("Login successful!"); // Show success message
+        } else {
+          alert(response.data.message); // Show error message
+        }
       })
       .catch((error) => {
         console.error('Error during login:', error);
+        alert('An error occurred during login. Please try again.'); // User-friendly error message
       });
   };
 

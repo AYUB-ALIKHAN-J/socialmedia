@@ -1,14 +1,8 @@
-.home-page {
-    display: flex;
-  }
-  
-  .post-section {
-    width: 80%;
-    padding: 20px;
-  }
-  
-  .new-post-btn {
-    margin: 20px;
-    padding: 10px 20px;
-    font-size: 16px;
-  }
+.home-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.home-content h1 {
+  margin-bottom: 20px;
+}

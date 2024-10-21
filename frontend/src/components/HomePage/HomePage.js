@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Import axios here
+import axios from 'axios';
 import Navbar from '../Navbar/Navbar';
+import './HomePage.css';
 
 const HomePage = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -8,8 +9,8 @@ const HomePage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/current-user'); // Adjust your endpoint as necessary
-        setCurrentUser(response.data.user); // Assuming your response has the user data in this structure
+        const response = await axios.get('http://127.0.0.1:8000/current-user');
+        setCurrentUser(response.data.user);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -19,7 +20,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <Navbar currentUser={currentUser} />
       <div className="home-content">
         <h1>Welcome, {currentUser ? currentUser.name : 'Guest'}!</h1>
