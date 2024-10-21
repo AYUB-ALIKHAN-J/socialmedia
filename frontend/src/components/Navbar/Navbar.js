@@ -23,7 +23,7 @@ const Navbar = () => {
         <li>
           <a href="/knowledge-hub">
             <FaBook className="icon" />
-            Knowledge Hub
+            Knowledge cllass
           </a>
         </li>
         <li>
