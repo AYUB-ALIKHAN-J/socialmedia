@@ -21,8 +21,10 @@ const Login = () => {
       .then((response) => {
         console.log(response.data); // Log the full response data for debugging
         if (response.data.message === "Login successful") {
-          // Navigate to the home page with user data
-          navigate('/home', { state: { userData: response.data.user } });
+          // Store username in localStorage
+          localStorage.setItem('username', response.data.user);
+          // Navigate to the home page
+          navigate('/home');
           alert("Login successful!"); // Show success message
         } else {
           alert(response.data.message); // Show error message

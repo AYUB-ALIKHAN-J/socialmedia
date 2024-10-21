@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Post.css';
 
 const Post = () => {
-  const [username, setUsername] = useState(''); // Added username
   const [caption, setCaption] = useState('');
   const [postImage, setPostImage] = useState(null);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const savedUsername = localStorage.getItem('username');
+    if (savedUsername) {
+      setUsername(savedUsername); // Set username from localStorage
+    }
+  }, []);
 
   const handleImageChange = (e) => {
     setPostImage(e.target.files[0]);
@@ -15,7 +22,7 @@ const Post = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('username', username); // Include username in the formData
+    formData.append('username', username); // Automatically set username from localStorage
     formData.append('caption', caption);
     if (postImage) {
       formData.append('postImage', postImage);
@@ -28,7 +35,6 @@ const Post = () => {
         },
       });
       alert('Post created successfully!');
-      setUsername(''); // Clear fields after successful post
       setCaption('');
       setPostImage(null);
     } catch (error) {
@@ -43,11 +49,11 @@ const Post = () => {
         <h1>Create New Post</h1>
         <input
           type="text"
-          placeholder="Username"  // Added username input field
+          placeholder="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          readOnly // Make the username field read-only
           className="post-input"
-          required
+          style={{ cursor: 'not-allowed' }} // Optional: Make it clear that it's read-only
         />
         <input
           type="text"
