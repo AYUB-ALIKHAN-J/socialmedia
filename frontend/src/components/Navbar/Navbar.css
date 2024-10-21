@@ -1,0 +1,88 @@
+.navbar {
+    width: 20%; /* Adjust as needed */
+    min-height: 100vh;
+    background-color: #333;
+    padding-top: 1rem;
+    position: fixed; /* Fixes navbar on the left side */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensure navbar is above other content */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  .navbar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%; /* Ensure ul takes full width */
+  }
+  
+  .navbar ul li {
+    display: flex;
+    align-items: center;
+    width: 100%; /* Ensure li takes full width */
+    margin-bottom: 20px; /* Space between each item */
+  }
+  
+  .navbar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    width: 100%; /* Make the link take full width */
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar ul li a .icon {
+    margin-right: 10px;
+    font-size: 1.5rem; /* Adjust size of icons as needed */
+  }
+  
+  .navbar ul li a:hover {
+    color: #ffcc00; /* Change text color on hover */
+    background-color: rgba(255, 255, 255, 0.1); /* Slight background highlight */
+    border-radius: 5px;
+  }
+
+  .logout-button {
+    background: none;
+    border: none;
+    color: inherit; /* Use the same color as other links */
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit; /* Use the same font size */
+  }
+  
+  .navbar ul li::before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    background-color: #ffcc00;
+    height: 3px;
+    width: 0;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .navbar ul li:hover::before {
+    width: 100%; /* Animate underline effect on hover */
+  }
+  
+  @media (max-width: 768px) {
+    .navbar {
+      width: 100%; /* Make navbar full-width on smaller screens */
+      height: auto;
+      position: relative;
+    }
+  
+    .navbar ul li a {
+      font-size: 1rem; /* Slightly smaller font size for mobile */
+      padding: 10px;
+    }
+  }
+  
