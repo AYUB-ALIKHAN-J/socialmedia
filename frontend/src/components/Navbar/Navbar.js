@@ -17,7 +17,7 @@ const Navbar = () => {
         <li>
           <a href="/profile">
             <FaUser className="icon" />
-             My Profile
+            Profile
           </a>
         </li>
         <li>
