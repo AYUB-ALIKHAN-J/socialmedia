@@ -154,7 +154,7 @@ app.get('/profile/:username', async (req, res) => {
     res.status(200).json({
       username: user.name,
       bio: user.bio,
-      profilePic: user.profilePic ? `http://localhost:${PORT}/${user.profilePic}` : null,
+      profilePic: user.profilePic ? `http://localhost:${PORT}/${user.profilePic}` : null, // Corrected path for serving images
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -214,4 +214,29 @@ app.post('/comment-post/:postId', async (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+// Route to update user profile (bio and profile picture)
+app.put('/edit-profile/:username', upload.single('profilePic'), async (req, res) => {
+  const { username } = req.params;
+  const { bio } = req.body;
+  
+  try {
+    const updateData = { bio };
+
+    // If a new profile picture is uploaded, update the profilePic field
+    if (req.file) {
+      updateData.profilePic = req.file.path;
+    }
+
+    const updatedUser = await User.findOneAndUpdate({ name: username }, updateData, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });

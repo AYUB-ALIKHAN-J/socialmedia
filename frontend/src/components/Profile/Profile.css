@@ -1,6 +1,11 @@
+.profile-page {
+  display: flex;
+}
+
 .profile-container {
+  flex: 1;
+  margin-left: 20%;
   max-width: 800px;
-  margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -20,6 +25,33 @@
   margin-bottom: 10px;
 }
 
+.edit-section {
+  margin-top: 10px;
+}
+
+.edit-section textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.save-btn,
+.edit-btn {
+  background-color: #ffcc00;
+  color: #333;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-btn:hover,
+.edit-btn:hover {
+  background-color: #e6b800;
+}
+
 .posts-section {
   display: flex;
   flex-wrap: wrap;
@@ -32,7 +64,6 @@
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   width: calc(50% - 20px);
-  box-sizing: border-box;
 }
 
 .post-image {
@@ -46,13 +77,49 @@
   padding: 10px;
   text-align: left;
 }
-
-.post-details h2 {
-  font-size: 18px;
-  margin: 10px 0;
+.edit-profile-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.post-details p {
-  margin: 5px 0;
-  font-size: 14px;
+.edit-profile-btn:hover {
+  background-color: #45a049;
+}
+
+.edit-profile-form {
+  margin-top: 20px;
+}
+
+.edit-profile-form input {
+  margin: 10px 0;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.save-btn, .cancel-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.cancel-btn {
+  background-color: #f44336;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+}
+
+.cancel-btn:hover {
+  background-color: #e53935;
 }
