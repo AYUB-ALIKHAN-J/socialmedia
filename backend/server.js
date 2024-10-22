@@ -240,3 +240,32 @@ app.put('/edit-profile/:username', upload.single('profilePic'), async (req, res)
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get('/all-posts', async (req, res) => {
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 });
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to unlike a post
+app.post('/unlike-post/:postId', async (req, res) => {
+  const { username } = req.body;
+  const { postId } = req.params;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (post.likes.includes(username)) {
+      post.likes = post.likes.filter((user) => user !== username);
+      await post.save();
+      res.status(200).json({ message: 'Post unliked successfully', likes: post.likes });
+    } else {
+      res.status(400).json({ message: 'You have not liked this post' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});

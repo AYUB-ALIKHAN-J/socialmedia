@@ -1,45 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Navbar.css';
-import { FaHome, FaUser, FaBook, FaUsers, FaSignOutAlt, FaPlusCircle } from 'react-icons/fa';
+import { FaHome, FaUser, FaBook, FaUsers, FaPlusCircle, FaSignOutAlt } from 'react-icons/fa';
 
 const Navbar = () => {
+  const [active, setActive] = useState(null); // Initialize active as null to remove the default home active
+
+  const handleSetActive = (page) => {
+    setActive(page);
+  };
+
   return (
     <nav className="navbar">
       <ul>
-        <li>
+        <li className={active === 'home' ? 'active' : ''} onClick={() => handleSetActive('home')}>
           <a href="/home">
             <FaHome className="icon" />
-            Home
           </a>
         </li>
-        <li>
+        <li className={active === 'profile' ? 'active' : ''} onClick={() => handleSetActive('profile')}>
           <a href="/profile">
             <FaUser className="icon" />
-            My Profile
           </a>
         </li>
-        <li>
+        <li className={active === 'knowledge-hub' ? 'active' : ''} onClick={() => handleSetActive('knowledge-hub')}>
           <a href="/knowledge-hub">
             <FaBook className="icon" />
-            Knowledge Hub
           </a>
         </li>
-        <li>
+        <li className={active === 'study-group' ? 'active' : ''} onClick={() => handleSetActive('study-group')}>
           <a href="/study-group">
             <FaUsers className="icon" />
-            Study Group
           </a>
         </li>
-        <li>
+        <li className={active === 'new-post' ? 'active' : ''} onClick={() => handleSetActive('new-post')}>
           <a href="/new-post">
             <FaPlusCircle className="icon" />
-            Add New Post
           </a>
         </li>
-        <li>
+        <li onClick={() => setActive('logout')}>
           <a href="/">
             <FaSignOutAlt className="icon" />
-            Logout
           </a>
         </li>
       </ul>
