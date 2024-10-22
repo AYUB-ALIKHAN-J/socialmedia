@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path'); // Import path module to serve static files
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve the 'uploads' folder publicly for images
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
 
 // Multer setup for file uploads (handling profile pictures and post images)
 const storage = multer.diskStorage({
@@ -136,6 +140,40 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Route to fetch user profile data
+app.get('/profile/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ name: username });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      username: user.name,
+      bio: user.bio,
+      profilePic: user.profilePic ? `http://localhost:${PORT}/${user.profilePic}` : null,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to fetch posts by user
+app.get('/user-posts/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const posts = await Post.find({ username });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Route to like a post
 app.post('/like-post/:postId', async (req, res) => {
   const { username } = req.body;
@@ -155,6 +193,7 @@ app.post('/like-post/:postId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 // Route to add a comment to a post
 app.post('/comment-post/:postId', async (req, res) => {
   const { username, comment } = req.body;
@@ -171,7 +210,6 @@ app.post('/comment-post/:postId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 // Start server
 app.listen(PORT, () => {
