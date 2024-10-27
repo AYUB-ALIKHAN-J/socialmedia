@@ -50,6 +50,8 @@ const userSchema = new mongoose.Schema({
   mail: { type: String, required: true, unique: true },
   bio: String,
   profilePic: String,
+  following: { type: [String], default: [] }, // Array of usernames the user is following
+  followers: { type: [String], default: [] }, // Array of usernames following this user
 });
 
 const User = mongoose.model('User', userSchema);
@@ -140,7 +142,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Route to fetch user profile data
+// Route to fetch user profile data along with followers and following usernames
 app.get('/profile/:username', async (req, res) => {
   const { username } = req.params;
 
@@ -151,15 +153,22 @@ app.get('/profile/:username', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Fetch usernames of followers and following
+    const followers = await User.find({ name: { $in: user.followers } }, 'name');
+    const following = await User.find({ name: { $in: user.following } }, 'name');
+
     res.status(200).json({
       username: user.name,
       bio: user.bio,
-      profilePic: user.profilePic ? `http://localhost:${PORT}/${user.profilePic}` : null, // Corrected path for serving images
+      profilePic: user.profilePic ? `http://localhost:${PORT}/${user.profilePic}` : null,
+      followers: followers.map(f => f.name), // List of follower usernames
+      following: following.map(f => f.name), // List of following usernames
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Route to fetch posts by user
 app.get('/user-posts/:username', async (req, res) => {
@@ -283,3 +292,77 @@ app.post('/unlike-post/:postId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Route to follow a user
+app.post('/follow/:username', async (req, res) => {
+  const { currentUser } = req.body; // User who is following
+  const { username } = req.params; // User to be followed
+
+  try {
+    const userToFollow = await User.findOne({ name: username });
+    const followingUser = await User.findOne({ name: currentUser });
+
+    if (!userToFollow || !followingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Prevent following self
+    if (currentUser === username) {
+      return res.status(400).json({ message: "You can't follow yourself" });
+    }
+
+    // Check if already following
+    if (followingUser.following.includes(username)) {
+      return res.status(400).json({ message: 'Already following this user' });
+    }
+
+    // Update followers and following lists
+    followingUser.following.push(username);
+    userToFollow.followers.push(currentUser);
+    await followingUser.save();
+    await userToFollow.save();
+
+    res.status(200).json({ message: 'Followed successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// Route to unfollow a user
+app.post('/unfollow/:username', async (req, res) => {
+  const { currentUser } = req.body; // User who is unfollowing
+  const { username } = req.params; // User to be unfollowed
+
+  try {
+    // Remove from following
+    await User.updateOne({ name: currentUser }, { $pull: { following: username } });
+    // Remove from followers of the user being unfollowed
+    await User.updateOne({ name: username }, { $pull: { followers: currentUser } });
+
+    res.status(200).json({ message: 'Unfollowed successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Route to get user followers and following count
+app.get('/follow-count/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await User.findOne({ name: username });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      followingCount: user.following.length,
+      followersCount: user.followers.length,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+

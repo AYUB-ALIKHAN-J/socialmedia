@@ -96,3 +96,22 @@
 .comments-section span {
   font-weight: bold;
 }
+
+.follow-btn {
+  margin: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.follow-btn.follow {
+  background-color: #28a745; /* Green for follow */
+  color: white;
+}
+
+.follow-btn.unfollow {
+  background-color: #dc3545; /* Red for unfollow */
+  color: white;
+}
+

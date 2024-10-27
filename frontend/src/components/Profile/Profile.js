@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Profile.css';
+import { FaUserFriends, FaUsers } from 'react-icons/fa';
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({ username: '', profilePic: '', bio: '' });
@@ -9,16 +10,28 @@ const Profile = () => {
   const [newBio, setNewBio] = useState('');
   const [newProfilePic, setNewProfilePic] = useState(null);
   const [newComment, setNewComment] = useState({});
+  const [followCount, setFollowCount] = useState({ followingCount: 0, followersCount: 0 });
+  const [userProfile, setUserProfile] = useState(null);
+  const [currentUser, setCurrentUser] = useState('');
 
   useEffect(() => {
     const fetchProfileData = async () => {
+      const savedUsername = localStorage.getItem('username');
+      setCurrentUser(savedUsername);
+
       try {
-        const savedUsername = localStorage.getItem('username');
         const profileResponse = await axios.get(`http://127.0.0.1:8000/profile/${savedUsername}`);
         setProfileData(profileResponse.data);
 
         const postsResponse = await axios.get(`http://127.0.0.1:8000/user-posts/${savedUsername}`);
         setUserPosts(postsResponse.data);
+
+        // Fetch follow count
+        const followCountResponse = await axios.get(`http://127.0.0.1:8000/follow-count/${savedUsername}`);
+        setFollowCount(followCountResponse.data);
+
+        const response = await axios.get(`http://127.0.0.1:8000/profile/${savedUsername}`);
+        setUserProfile(response.data);
       } catch (error) {
         console.error('Error fetching profile data:', error);
       }
@@ -39,12 +52,11 @@ const Profile = () => {
       });
       setProfileData(response.data.user);
       setEditMode(false);
-      // Reset the input fields
       setNewBio('');
       setNewProfilePic(null);
     } catch (error) {
       console.error('Error updating profile:', error);
-      alert('Failed to update profile. Please try again.'); // User feedback
+      alert('Failed to update profile. Please try again.');
     }
   };
 
@@ -66,7 +78,7 @@ const Profile = () => {
       setNewComment((prev) => ({ ...prev, [postId]: '' }));
     } catch (error) {
       console.error('Error adding comment:', error);
-      alert('Failed to add comment. Please try again.'); // User feedback
+      alert('Failed to add comment. Please try again.');
     }
   };
 
@@ -76,13 +88,15 @@ const Profile = () => {
       setUserPosts((posts) => posts.filter((post) => post._id !== postId));
     } catch (error) {
       console.error('Error deleting post:', error);
-      alert('Failed to delete post. Please try again.'); // User feedback
+      alert('Failed to delete post. Please try again.');
     }
   };
 
   const handleCommentChange = (postId, text) => {
     setNewComment((prev) => ({ ...prev, [postId]: text }));
   };
+
+  if (!userProfile) return <p>Loading...</p>;
 
   return (
     <div className="profile-container">
@@ -91,6 +105,14 @@ const Profile = () => {
         <h1>{profileData.username}</h1>
         <p>{profileData.bio}</p>
         <button onClick={() => setEditMode(true)} className="edit-profile-btn">Edit Profile</button>
+        <div className="follow-info">
+          <div>
+            <FaUsers /> {followCount.followersCount} Followers
+          </div>
+          <div>
+            <FaUserFriends /> {followCount.followingCount} Following
+          </div>
+        </div>
       </div>
 
       {editMode && (
@@ -122,7 +144,7 @@ const Profile = () => {
               <div className="post-details">
                 <h2>{post.caption}</h2>
                 <p>Likes: {post.likes.length}</p>
-                <p>Comments: {post.comments.length}</p> {/* Added comments count */}
+                <p>Comments: {post.comments.length}</p>
 
                 <div className="comments-section">
                   {post.comments.map((comment, idx) => (
