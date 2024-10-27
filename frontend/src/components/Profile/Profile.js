@@ -5,9 +5,10 @@ import './Profile.css';
 const Profile = () => {
   const [profileData, setProfileData] = useState({ username: '', profilePic: '', bio: '' });
   const [userPosts, setUserPosts] = useState([]);
-  const [editMode, setEditMode] = useState(false); // State to toggle edit mode
-  const [newBio, setNewBio] = useState(''); // To store new bio
-  const [newProfilePic, setNewProfilePic] = useState(null); // To store new profile picture
+  const [editMode, setEditMode] = useState(false);
+  const [newBio, setNewBio] = useState('');
+  const [newProfilePic, setNewProfilePic] = useState(null);
+  const [newComment, setNewComment] = useState({});
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -16,37 +17,71 @@ const Profile = () => {
         const profileResponse = await axios.get(`http://127.0.0.1:8000/profile/${savedUsername}`);
         setProfileData(profileResponse.data);
 
-        // Fetch user's posts
         const postsResponse = await axios.get(`http://127.0.0.1:8000/user-posts/${savedUsername}`);
         setUserPosts(postsResponse.data);
       } catch (error) {
         console.error('Error fetching profile data:', error);
       }
     };
-
     fetchProfileData();
   }, []);
 
-  // Handle profile update
   const handleProfileUpdate = async () => {
     const formData = new FormData();
-    formData.append('bio', newBio); // Append new bio
+    formData.append('bio', newBio);
     if (newProfilePic) {
-      formData.append('profilePic', newProfilePic); // Append new profilePic if uploaded
+      formData.append('profilePic', newProfilePic);
     }
-
     try {
       const savedUsername = localStorage.getItem('username');
       const response = await axios.put(`http://127.0.0.1:8000/edit-profile/${savedUsername}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setProfileData(response.data.user); // Update the profile data on the frontend
-      setEditMode(false); // Exit edit mode after successful update
+      setProfileData(response.data.user);
+      setEditMode(false);
+      // Reset the input fields
+      setNewBio('');
+      setNewProfilePic(null);
     } catch (error) {
       console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again.'); // User feedback
     }
+  };
+
+  const handleAddComment = async (postId) => {
+    if (!newComment[postId]?.trim()) return;
+
+    try {
+      await axios.post(`http://127.0.0.1:8000/comment-post/${postId}`, { 
+        username: profileData.username, 
+        comment: newComment[postId] 
+      });
+      setUserPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? { ...post, comments: [...post.comments, { username: profileData.username, comment: newComment[postId] }] }
+            : post
+        )
+      );
+      setNewComment((prev) => ({ ...prev, [postId]: '' }));
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      alert('Failed to add comment. Please try again.'); // User feedback
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/posts/${postId}`);
+      setUserPosts((posts) => posts.filter((post) => post._id !== postId));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Failed to delete post. Please try again.'); // User feedback
+    }
+  };
+
+  const handleCommentChange = (postId, text) => {
+    setNewComment((prev) => ({ ...prev, [postId]: text }));
   };
 
   return (
@@ -55,9 +90,7 @@ const Profile = () => {
         <img src={profileData.profilePic} alt="Profile" className="profile-pic" />
         <h1>{profileData.username}</h1>
         <p>{profileData.bio}</p>
-        <button onClick={() => setEditMode(true)} className="edit-profile-btn">
-          Edit Profile
-        </button>
+        <button onClick={() => setEditMode(true)} className="edit-profile-btn">Edit Profile</button>
       </div>
 
       {editMode && (
@@ -70,12 +103,8 @@ const Profile = () => {
             onChange={(e) => setNewBio(e.target.value)}
           />
           <input type="file" onChange={(e) => setNewProfilePic(e.target.files[0])} />
-          <button onClick={handleProfileUpdate} className="save-btn">
-            Save
-          </button>
-          <button onClick={() => setEditMode(false)} className="cancel-btn">
-            Cancel
-          </button>
+          <button onClick={handleProfileUpdate} className="save-btn">Save</button>
+          <button onClick={() => setEditMode(false)} className="cancel-btn">Cancel</button>
         </div>
       )}
 
@@ -83,17 +112,32 @@ const Profile = () => {
         {userPosts.length === 0 ? (
           <p>No posts to show</p>
         ) : (
-          userPosts.map((post, index) => (
-            <div key={index} className="post-card">
+          userPosts.map((post) => (
+            <div key={post._id} className="post-card">
               <img 
-                src={`http://localhost:8000/${post.postImage}`}  // Update the image source with the correct path
+                src={`http://localhost:8000/${post.postImage}`} 
                 alt="Post" 
                 className="post-image" 
               />
               <div className="post-details">
                 <h2>{post.caption}</h2>
-                <p>Likes: {post.likes}</p>
-                <p>Comments: {post.comments.length}</p>
+                <p>Likes: {post.likes.length}</p>
+                <p>Comments: {post.comments.length}</p> {/* Added comments count */}
+
+                <div className="comments-section">
+                  {post.comments.map((comment, idx) => (
+                    <p key={idx}><strong>{comment.username}</strong>: {comment.comment}</p>
+                  ))}
+                  <input
+                    type="text"
+                    placeholder="Add a comment..."
+                    value={newComment[post._id] || ''}
+                    onChange={(e) => handleCommentChange(post._id, e.target.value)}
+                  />
+                  <button onClick={() => handleAddComment(post._id)}>Comment</button>
+                </div>
+
+                <button onClick={() => handleDeletePost(post._id)} className="delete-post-button">Delete Post</button>
               </div>
             </div>
           ))

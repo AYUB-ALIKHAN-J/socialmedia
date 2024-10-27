@@ -211,6 +211,20 @@ app.post('/comment-post/:postId', async (req, res) => {
   }
 });
 
+// Route to delete a specific post
+app.delete('/posts/:postId', async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const post = await Post.findByIdAndDelete(postId);
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+
+    res.status(200).json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
@@ -246,8 +260,8 @@ app.get('/all-posts', async (req, res) => {
     const posts = await Post.find().sort({ createdAt: -1 });
     res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Route to unlike a post
